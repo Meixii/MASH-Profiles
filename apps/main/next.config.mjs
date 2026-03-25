@@ -9,7 +9,7 @@ try {
         protocol: url.protocol.replace(':', ''),
         hostname: url.hostname,
         port: url.port,
-        pathname: '/api/media/**',
+        pathname: '/media/**',
     }
 } catch {
     cmsRemotePattern = null
@@ -22,7 +22,7 @@ const nextConfig = {
         removeConsole: process.env.NODE_ENV === 'production',
     },
     images: {
-        domains: ['avatars.githubusercontent.com', 'static.wixstatic.com', 'assets-global.website-files.com', 'res.cloudinary.com'],
+        domains: ['avatars.githubusercontent.com', 'static.wixstatic.com', 'assets-global.website-files.com'],
         remotePatterns: [cmsRemotePattern].filter(Boolean),
     },
     async redirects() {

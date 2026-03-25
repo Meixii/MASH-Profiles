@@ -13,21 +13,6 @@ import { SiteSettings } from './globals/SiteSettings'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const runtimeImport = new Function('specifier', 'return import(specifier)') as (
-  specifier: string,
-) => Promise<any>
-
-async function getCloudinaryStoragePlugin() {
-  try {
-    const module = await runtimeImport('payloadcms-storage-cloudinary')
-
-    return module?.cloudinaryStorage ?? null
-  } catch {
-    return null
-  }
-}
-
-const cloudinaryStorage = await getCloudinaryStoragePlugin()
 
 export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3001',
@@ -46,22 +31,7 @@ export default buildConfig({
   globals: [SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
-  plugins:
-    cloudinaryStorage && process.env.CLOUDINARY_CLOUD_NAME
-      ? [
-          cloudinaryStorage({
-            collections: {
-              media: true,
-            },
-            cloudinaryConfig: {
-              api_key: process.env.CLOUDINARY_API_KEY,
-              api_secret: process.env.CLOUDINARY_API_SECRET,
-              cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-            },
-            folder: process.env.CLOUDINARY_FOLDER,
-          }),
-        ]
-      : [],
+  plugins: [],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
