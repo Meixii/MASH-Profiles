@@ -3,6 +3,8 @@ const cmsBaseUrl = process.env.NEXT_PUBLIC_CMS_BASE_URL || process.env.CMS_BASE_
 
 let cmsRemotePattern = null
 
+let cmsDirectMediaPattern = null
+
 try {
     const url = new URL(cmsBaseUrl)
     cmsRemotePattern = {
@@ -11,8 +13,15 @@ try {
         port: url.port,
         pathname: '/api/media/file/**',
     }
+    cmsDirectMediaPattern = {
+        protocol: url.protocol.replace(':', ''),
+        hostname: url.hostname,
+        port: url.port,
+        pathname: '/media/**',
+    }
 } catch {
     cmsRemotePattern = null
+    cmsDirectMediaPattern = null
 }
 
 const nextConfig = {
@@ -23,7 +32,7 @@ const nextConfig = {
     },
     images: {
         domains: ['avatars.githubusercontent.com', 'static.wixstatic.com', 'assets-global.website-files.com'],
-        remotePatterns: [cmsRemotePattern].filter(Boolean),
+        remotePatterns: [cmsRemotePattern, cmsDirectMediaPattern].filter(Boolean),
     },
     async headers() {
         return [
@@ -50,7 +59,7 @@ const nextConfig = {
         return [
             {
                 source: '/',
-                destination: 'https://quadkore.app',
+                destination: 'https://profile.quadkore.app',
                 permanent: true,
             },
         ];
