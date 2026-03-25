@@ -129,6 +129,42 @@ export async function getPayloadClient() {
   return getPayload({ config: payloadConfig })
 }
 
+const PAYLOAD_PUBLIC_SERVER_URL = process.env.PAYLOAD_PUBLIC_SERVER_URL?.trim() || ''
+
+function normalizeMediaUrl(url: string) {
+  if (!url) {
+    return null
+  }
+
+  try {
+    const parsedUrl = new URL(url)
+
+    if (
+      (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1') &&
+      PAYLOAD_PUBLIC_SERVER_URL
+    ) {
+      const baseUrl = new URL(PAYLOAD_PUBLIC_SERVER_URL)
+      parsedUrl.protocol = baseUrl.protocol
+      parsedUrl.hostname = baseUrl.hostname
+      parsedUrl.port = baseUrl.port
+
+      return parsedUrl.toString()
+    }
+
+    return parsedUrl.toString()
+  } catch {
+    if (!PAYLOAD_PUBLIC_SERVER_URL) {
+      return null
+    }
+
+    try {
+      return new URL(url, PAYLOAD_PUBLIC_SERVER_URL).toString()
+    } catch {
+      return null
+    }
+  }
+}
+
 export function resolveMediaUrl(value: unknown) {
   if (!value || typeof value !== 'object') {
     return null
@@ -136,7 +172,7 @@ export function resolveMediaUrl(value: unknown) {
 
   const asset = value as MediaAsset
 
-  return typeof asset.url === 'string' ? asset.url : null
+  return typeof asset.url === 'string' ? normalizeMediaUrl(asset.url) : null
 }
 
 export async function getProfileLandingData() {

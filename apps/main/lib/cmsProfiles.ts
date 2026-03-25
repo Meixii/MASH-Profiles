@@ -288,6 +288,37 @@ export function getCMSBaseUrl() {
   return CMS_BASE_URL
 }
 
+function normalizeMediaUrl(url: string) {
+  if (!url) {
+    return null
+  }
+
+  try {
+    const parsedUrl = new URL(url)
+
+    if ((parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1') && CMS_BASE_URL) {
+      const baseUrl = new URL(CMS_BASE_URL)
+      parsedUrl.protocol = baseUrl.protocol
+      parsedUrl.hostname = baseUrl.hostname
+      parsedUrl.port = baseUrl.port
+
+      return parsedUrl.toString()
+    }
+
+    return parsedUrl.toString()
+  } catch {
+    if (!CMS_BASE_URL) {
+      return null
+    }
+
+    try {
+      return new URL(url, CMS_BASE_URL).toString()
+    } catch {
+      return null
+    }
+  }
+}
+
 export function resolveRemoteMediaUrl(value: unknown) {
   if (!value || typeof value !== 'object') {
     return null
@@ -295,7 +326,7 @@ export function resolveRemoteMediaUrl(value: unknown) {
 
   const media = value as CMSMedia
 
-  return typeof media.url === 'string' ? media.url : null
+  return typeof media.url === 'string' ? normalizeMediaUrl(media.url) : null
 }
 
 export async function getCMSProfiles(): Promise<CMSProfilesResponse | null> {
