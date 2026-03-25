@@ -109,7 +109,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
             </div>
           </div>
           <div className="end-title text-pageText text-md">
-            QuadCore &copy; 2026
+            Powered by: QuadKore &copy; 2026
             <br />
             <br />
             <br />

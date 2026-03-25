@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   description: 'Redirects to the main portfolio page.',
-  title: 'Redirecting | Mika',
+  title: 'Redirecting | QuadKore Profile',
 }
 
 export default async function ProfilesPage() {

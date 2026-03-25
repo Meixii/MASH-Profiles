@@ -22,7 +22,7 @@ const nextConfig = {
         removeConsole: process.env.NODE_ENV === 'production',
     },
     images: {
-        domains: ['avatars.githubusercontent.com', 'static.wixstatic.com', 'assets-global.website-files.com'],
+        domains: ['avatars.githubusercontent.com', 'static.wixstatic.com', 'assets-global.website-files.com', 'res.cloudinary.com'],
         remotePatterns: [cmsRemotePattern].filter(Boolean),
     },
     async redirects() {

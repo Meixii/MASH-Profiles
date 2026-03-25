@@ -26,7 +26,7 @@ export async function generateMetadata({
 
   return {
     description: profile.summary || settings?.selectorDescription || 'CMS-driven person page.',
-    title: `${profile.displayName} | Mika`,
+    title: `${profile.displayName} | QuadKore Profile`,
   }
 }
 
