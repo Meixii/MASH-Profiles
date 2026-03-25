@@ -3,14 +3,6 @@
 import { useEffect, useRef, useState } from "react"
 import useOnScreen from "@/hooks/useOnScreen"
 import useScrollActive from "@/hooks/useScrollActive"
-import Loopy from "@/public/assets/projects/loopy.png"
-import MantineBoards from "@/public/assets/projects/mantine-boards.png"
-import MiroClone from "@/public/assets/projects/miro-clone.png"
-import MotionScape from "@/public/assets/projects/motion-scape.png"
-import PortfolioV2 from "@/public/assets/projects/portfolio-v2.png"
-import TheRealHotels from "@/public/assets/projects/therealhotels.png"
-import ValentinCarousel from "@/public/assets/projects/valentin-carousel.png"
-import VSCode from "@/public/assets/projects/vscode.png"
 import { useSectionStore } from "@/store/section"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
@@ -38,10 +30,8 @@ export default function ProjectSection({ profile }: ProjectSectionProps) {
     }
   }, [])
   const projectContent = profile?.content?.projects
-  const projectTitle = projectContent?.title || "Featured Projects"
-  const projectBody =
-    projectContent?.body ||
-    "Good design is obvious. Great design is transparent.\nDesign is not for philosophy, it's for life."
+  const projectTitle = projectContent?.title || ""
+  const projectBody = projectContent?.body || ""
 
   const cmsProjects: ProjectItem[] = (projectContent?.items ?? []).map((item, i) => ({
     id: i,
@@ -57,12 +47,10 @@ export default function ProjectSection({ profile }: ProjectSectionProps) {
     liveUrl: item.liveUrl ?? null,
   }))
 
-  const displayProjects = cmsProjects.length > 0 ? cmsProjects : staticProjects
-
   const githubProfileUrl =
     profile?.content?.contact?.links?.find((l) =>
       l.label?.toLowerCase().includes('github')
-    )?.href ?? 'https://github.com/devshinthant'
+    )?.href ?? null
 
   const elementRef = useRef<HTMLDivElement>(null)
   const isOnScreen = useOnScreen(elementRef)
@@ -112,36 +100,42 @@ export default function ProjectSection({ profile }: ProjectSectionProps) {
             order={1}
             show={isOnScreen}
           >
-            <div className="text-xl md:text-4xl tracking-tight font-medium w-fit text-accentColor">
-              {projectTitle}
-            </div>
+            {projectTitle ? (
+              <div className="text-xl md:text-4xl tracking-tight font-medium w-fit text-accentColor">
+                {projectTitle}
+              </div>
+            ) : null}
           </RoughNotation>
-          <div ref={elementRef} className="overflow-hidden ">
-            <div className="qoutes-animation md:w-full text-center font-medium flex flex-col items-center text-panelText">
-              {projectBody.split('\n').map((line, i) => (
-                <div key={i}>{line}</div>
-              ))}
+          {projectBody ? (
+            <div ref={elementRef} className="overflow-hidden ">
+              <div className="qoutes-animation md:w-full text-center font-medium flex flex-col items-center text-panelText">
+                {projectBody.split('\n').map((line, i) => (
+                  <div key={i}>{line}</div>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
         <div className="w-full pt-40 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {displayProjects.map((project) => (
+          {cmsProjects.map((project) => (
             <ProjectCard key={project.id} item={project} />
           ))}
         </div>
 
-        <div className="font-medium text-panelText">
-          Explore more projects in{" "}
-          <Link
-            href={githubProfileUrl}
-            target="_blank"
-            aria-label="Explore more in my github profile"
-            rel="noopener noreferrer"
-            className="text-accentColor navlink"
-          >
-            my github profile
-          </Link>
-        </div>
+        {githubProfileUrl ? (
+          <div className="font-medium text-panelText">
+            Explore more projects in{" "}
+            <Link
+              href={githubProfileUrl}
+              target="_blank"
+              aria-label="Explore more in my github profile"
+              rel="noopener noreferrer"
+              className="text-accentColor navlink"
+            >
+              my github profile
+            </Link>
+          </div>
+        ) : null}
       </div>
     </section>
   )
@@ -156,86 +150,3 @@ export interface ProjectItem {
   githubUrl?: string | null
   liveUrl?: string | null
 }
-
-const staticProjects: ProjectItem[] = [
-  {
-    id: 1,
-    title: "VSCode Portfolio",
-    description:
-      "My portfolio website in vscode version developed with React and TypeScript.",
-    techStacks: ["ReactJS", "TypeScript"],
-    imageSrc: VSCode,
-    githubUrl: "https://github.com/devshinthant/vscode-portfolio",
-    liveUrl: "https://devshinthant-v1.vercel.app",
-  },
-  {
-    id: 2,
-    title: "Portfolio V2",
-    description:
-      "A refined and enhanced showcase of my work, designed to highlight my skills and projects with a sleek and modern interface.",
-    techStacks: ["NextJS", "ShadnUI", "GSAP"],
-    imageSrc: PortfolioV2,
-    githubUrl: "https://github.com/devshinthant/shinthant.dev",
-    liveUrl: "https://devshinthant.vercel.app",
-  },
-  {
-    id: 3,
-    title: "Mantine Boards",
-    description:
-      "Responsive Dashboards, perfect for admin dashboards, analytics platforms, or any project that requires a clean, modern interface.",
-    techStacks: ["RemixJS", "MantineUI"],
-    imageSrc: MantineBoards,
-    githubUrl: "https://github.com/devshinthant/mantine-boards",
-    liveUrl: "https://mantine-boards.vercel.app",
-  },
-  {
-    id: 4,
-    title: "Motion Scape",
-    description:
-      "Motion Scape is a visually dynamic website dedicated to the art of animations and transitions in web design.",
-    techStacks: ["NextJS", "GSAP", "TypeScript"],
-    imageSrc: MotionScape,
-    githubUrl: "https://github.com/devshinthant/motion-scape",
-    liveUrl: "https://motion-gsap.vercel.app",
-  },
-  {
-    id: 5,
-    title: "Loopy",
-    description:
-      "Loopy is a modern video conferencing app designed for seamless virtual meetings with real-time video, audio, and chat features.",
-    techStacks: ["ReactJS", "WebRTC", "Socket.io"],
-    imageSrc: Loopy,
-    githubUrl: "https://github.com/devshinthant/loopy",
-    liveUrl: "https://loopy-ashen.vercel.app/",
-  },
-  {
-    id: 6,
-    title: "Valentin Carousel",
-    description:
-      "An animated carousel inspired by Valentin Awwward Winning Website.",
-    techStacks: ["ReactJS", "GSAP"],
-    imageSrc: ValentinCarousel,
-    githubUrl: "https://github.com/devshinthant/valentin-carousel",
-    liveUrl: "https://valentin-carousel.vercel.app",
-  },
-  {
-    id: 7,
-    title: "TheRealHotels",
-    description:
-      "A Landing Website Inspired by the awwarded website therealhotels.com.",
-    techStacks: ["ReactJS", "GSAP"],
-    imageSrc: TheRealHotels,
-    githubUrl: "https://github.com/devshinthant/therealhotels",
-    liveUrl: "https://therealhotels.vercel.app",
-  },
-  {
-    id: 8,
-    title: "Miro Clone",
-    description:
-      "Enjoy a wide range of brushes, colors, and effects, along with layers, undo/redo functionality, and easy sharing options.",
-    techStacks: ["NextJS", "ShadcnUI", "Liveblocks"],
-    imageSrc: MiroClone,
-    githubUrl: "https://github.com/devshinthant/realtime-miro-clone",
-    liveUrl: "https://realtime-miro-clone.vercel.app",
-  },
-]

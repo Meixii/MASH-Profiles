@@ -13,6 +13,7 @@ interface Props {
 export default function BlogCard({ item }: Props) {
   const cardRef = useRef<HTMLDivElement>(null)
   const blogHref = item.link && item.link !== "#" ? item.link : null
+  const blogImage = item.image ?? null
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -49,14 +50,22 @@ export default function BlogCard({ item }: Props) {
         className="w-full group flex justify-between items-center hover:bg-panelAltBg rounded-md transition-colors p-1 pr-0 md:pr-4"
       >
         <div className="w-full flex flex-col md:flex-row items-center gap-5">
-          <Image
-            priority
-            width={140}
-            height={120}
-            className="h-full md:h-full bg-contain w-full md:w-[200px] transition-all group-hover:contrast-125 rounded-md"
-            src={item.image}
-            alt={item.title}
-          />
+          {blogImage ? (
+            <Image
+              priority
+              width={140}
+              height={120}
+              className="h-full md:h-full bg-contain w-full md:w-[200px] transition-all group-hover:contrast-125 rounded-md"
+              src={blogImage}
+              alt={item.title}
+            />
+          ) : (
+            <div className="h-full min-h-[120px] w-full md:w-[200px] rounded-md bg-panelAltBg flex items-center justify-center">
+              <span className="text-3xl font-black text-accentColor opacity-20 select-none uppercase">
+                {item.title.slice(0, 2)}
+              </span>
+            </div>
+          )}
           <div className="flex w-full md:w-3/5 flex-col items-start gap-2">
             <div className="text-panelText">{item.title}</div>
             <div className="flex items-center gap-2">
@@ -81,14 +90,22 @@ export default function BlogCard({ item }: Props) {
         className="w-full group flex justify-between items-center rounded-md transition-colors p-1 pr-0 md:pr-4"
       >
         <div className="w-full flex flex-col md:flex-row items-center gap-5">
-          <Image
-            priority
-            width={140}
-            height={120}
-            className="h-full md:h-full bg-contain w-full md:w-[200px] transition-all group-hover:contrast-125 rounded-md"
-            src={item.image}
-            alt={item.title}
-          />
+          {blogImage ? (
+            <Image
+              priority
+              width={140}
+              height={120}
+              className="h-full md:h-full bg-contain w-full md:w-[200px] transition-all group-hover:contrast-125 rounded-md"
+              src={blogImage}
+              alt={item.title}
+            />
+          ) : (
+            <div className="h-full min-h-[120px] w-full md:w-[200px] rounded-md bg-panelAltBg flex items-center justify-center">
+              <span className="text-3xl font-black text-accentColor opacity-20 select-none uppercase">
+                {item.title.slice(0, 2)}
+              </span>
+            </div>
+          )}
           <div className="flex w-full md:w-3/5 flex-col items-start gap-2">
             <div className="text-panelText">{item.title}</div>
             <div className="flex items-center gap-2">

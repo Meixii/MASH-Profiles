@@ -31,11 +31,7 @@ export default function AboutSection({ profile }: AboutSectionProps) {
   const statRefs = useRef<(HTMLSpanElement | null)[]>([])
   const aboutContent = profile?.content?.about
   const showTechStack = aboutContent?.showTechStack ?? true
-  const selectedTechStackKeys = showTechStack
-    ? aboutContent?.techStackItems?.length
-      ? aboutContent.techStackItems
-      : defaultTechStackOrder
-    : []
+  const selectedTechStackKeys = showTechStack ? aboutContent?.techStackItems ?? [] : []
   const techStackLabelMap = Object.fromEntries(
     techStackOptions.map((option) => [option.value, option.label])
   ) as Record<TechStackKey, string>
@@ -57,20 +53,11 @@ export default function AboutSection({ profile }: AboutSectionProps) {
   })
   const heroImageUrl = resolveRemoteMediaUrl(profile?.content?.hero?.image) || resolveRemoteMediaUrl(profile?.heroImage)
   const aboutImageSrc = heroImageUrl || ShinThantImage
-  const aboutTitle = aboutContent?.title || "<title>"
-  const aboutBody =
-    aboutContent?.body ||
-    "<body>"
-  const educationLabel = aboutContent?.educationLabel || "Education"
-  const educationBody =
-    aboutContent?.educationBody || "<education>"
-  const stats = aboutContent?.stats?.length
-    ? aboutContent.stats
-    : [
-        { label: "Experiences", value: "3" },
-        { label: "Completed Projects", value: "30" },
-        { label: "Contributions", value: "30" },
-      ]
+  const aboutTitle = aboutContent?.title || profile?.displayName || ""
+  const aboutBody = aboutContent?.body || ""
+  const educationLabel = aboutContent?.educationLabel || ""
+  const educationBody = aboutContent?.educationBody || ""
+  const stats = aboutContent?.stats ?? []
 
   useEffect(() => {
     const q = gsap.utils.selector(sectionRef)
@@ -187,9 +174,11 @@ export default function AboutSection({ profile }: AboutSectionProps) {
           <div className="w-full flex flex-col items-start gap-7 md:gap-9">
             <div className="relative">
               <div className="overflow-hidden">
-                <div className="text-animation text-accentColor text-3xl md:text-4xl font-medium">
-                  {profile?.displayName || "About me"}
-                </div>
+                {profile?.displayName ? (
+                  <div className="text-animation text-accentColor text-3xl md:text-4xl font-medium">
+                    {profile.displayName}
+                  </div>
+                ) : null}
               </div>
 
               <div className="absolute -top-6 -left-8">
@@ -215,38 +204,39 @@ export default function AboutSection({ profile }: AboutSectionProps) {
                 </div>
               </div>
 
-              <div className="overflow-hidden">
-                <div className="text-pageText text-animation">
-                  My Educational background.
+              {educationLabel || educationBody ? (
+                <div className="flex gap-1 flex-col items-start">
+                  {educationLabel ? <div className="text-accentColor">{educationLabel}</div> : null}
+                  {educationBody ? (
+                    <div className="overflow-hidden">
+                      <div className="text-pageText text-animation">
+                        {educationBody}
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
-              </div>
-              <div className="flex gap-1 flex-col items-start">
-                <div className="text-accentColor">{educationLabel}</div>
-                <div className="overflow-hidden">
-                  <div className="text-pageText text-animation">
-                    {educationBody}
-                  </div>
-                </div>
-              </div>
+              ) : null}
             </div>
 
-            <div className="w-full border-t-accentColor py-5 border-b-accentColor border-t-[0.01px] border-b-[0.01px] flex items-center gap-6 md:gap-6 lg:gap-20">
-              {stats.map((stat, index) => (
-                <div key={`${stat.label}-${index}`} className="flex flex-col items-center font-medium">
-                  <div className="text-3xl md:text-4xl text-pageText">
-                    <span
-                      ref={(node) => {
-                        statRefs.current[index] = node
-                      }}
-                    >
-                      {stat.value}
-                    </span>{" "}
-                    <span className="text-accentColor">+</span>
+            {stats.length ? (
+              <div className="w-full border-t-accentColor py-5 border-b-accentColor border-t-[0.01px] border-b-[0.01px] flex items-center gap-6 md:gap-6 lg:gap-20">
+                {stats.map((stat, index) => (
+                  <div key={`${stat.label}-${index}`} className="flex flex-col items-center font-medium">
+                    <div className="text-3xl md:text-4xl text-pageText">
+                      <span
+                        ref={(node) => {
+                          statRefs.current[index] = node
+                        }}
+                      >
+                        {stat.value}
+                      </span>{" "}
+                      <span className="text-accentColor">+</span>
+                    </div>
+                    <div className="text-pageText text-sm">{stat.label}</div>
                   </div>
-                  <div className="text-pageText text-sm">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : null}
           </div>
           <div className="w-full h-full flex justify-center items-center image-animation overflow-visible">
             <div className="relative w-[240px] h-[240px] lg:w-[420px] lg:h-[420px] overflow-visible">
@@ -361,16 +351,6 @@ const TechStack = ({ items }: TechStackProps) => {
     </div>
   )
 }
-
-const defaultTechStackOrder: TechStackKey[] = [
-  'typescript',
-  'react',
-  'next',
-  'javascript',
-  'tailwind',
-  'graphql',
-  'firebase',
-]
 
 const techStackCatalog: Partial<Record<TechStackKey, TechStackItem>> = {
   typescript: {

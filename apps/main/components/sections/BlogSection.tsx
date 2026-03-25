@@ -3,9 +3,6 @@
 import { useEffect, useRef, useState } from "react"
 import useOnScreen from "@/hooks/useOnScreen"
 import useScrollActive from "@/hooks/useScrollActive"
-import ComingSoon1 from "@/public/assets/blog/coming-soon-1.jpg"
-import ComingSoon2 from "@/public/assets/blog/coming-soon-2.jpg"
-import SpaceCat from "@/public/assets/blog/space-cat.webp"
 import { useSectionStore } from "@/store/section"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
@@ -23,12 +20,10 @@ export interface BlogCardItem {
   id: number | string
   title: string
   description: string
-  image: StaticImageData | string
+  image?: StaticImageData | string | null
   publishAt: string
   link?: string
 }
-
-const fallbackBlogImages = [SpaceCat, ComingSoon1, ComingSoon2]
 
 export default function BlogSection({ profile }: BlogSectionProps) {
   gsap.registerPlugin(ScrollTrigger)
@@ -42,27 +37,20 @@ export default function BlogSection({ profile }: BlogSectionProps) {
     }
   }, [])
   const blogContent = profile?.content?.blog
-  const blogTitle = blogContent?.title || "Blog"
-  const blogBody1 =
-    blogContent?.body ||
-    "I document my journey by writing blog posts about my projects and"
-  const blogBody2 =
-    blogContent?.posts?.length
-      ? `Check out ${blogContent.posts.length} recent entries below.`
-      : "Check out some of my latest entries below. 🚀"
+  const blogTitle = blogContent?.title || ""
+  const blogBody1 = blogContent?.body || ""
+  const blogBody2 = blogContent?.posts?.length ? `Check out ${blogContent.posts.length} recent entries below.` : ""
 
   const cmsBlogs: BlogCardItem[] = (blogContent?.posts ?? []).map((post, index) => ({
     id: post.title || index,
     title: post.title,
     description: post.description,
-    image:
-      (typeof post.image === "string" ? post.image : resolveRemoteMediaUrl(post.image)) ||
-      fallbackBlogImages[index % fallbackBlogImages.length],
+    image: typeof post.image === "string" ? post.image : resolveRemoteMediaUrl(post.image),
     publishAt: post.publishAt || "",
     link: post.link || undefined,
   }))
 
-  const displayBlogs = cmsBlogs.length > 0 ? cmsBlogs : blogs
+  const displayBlogs = cmsBlogs
 
   const elementRef = useRef<HTMLDivElement>(null)
   const isOnScreen = useOnScreen(elementRef)
@@ -112,17 +100,23 @@ export default function BlogSection({ profile }: BlogSectionProps) {
             order={1}
             show={isOnScreen}
           >
-            <div className="text-xl md:text-4xl tracking-tight font-medium w-fit text-accentColor">
-              {blogTitle}
-            </div>
+            {blogTitle ? (
+              <div className="text-xl md:text-4xl tracking-tight font-medium w-fit text-accentColor">
+                {blogTitle}
+              </div>
+            ) : null}
           </RoughNotation>
           <div ref={elementRef} className="overflow-hidden flex flex-col gap-1">
-            <div className="qoutes-animation mx-auto text-center text-sm text-pageText flex flex-col items-center font-normal">
-              {blogBody1}
-            </div>
-            <div className="qoutes-animation mx-auto text-center text-sm text-pageText flex flex-col items-center font-normal">
-              <div>{blogBody2}</div>
-            </div>
+            {blogBody1 ? (
+              <div className="qoutes-animation mx-auto text-center text-sm text-pageText flex flex-col items-center font-normal">
+                {blogBody1}
+              </div>
+            ) : null}
+            {blogBody2 ? (
+              <div className="qoutes-animation mx-auto text-center text-sm text-pageText flex flex-col items-center font-normal">
+                <div>{blogBody2}</div>
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -135,42 +129,3 @@ export default function BlogSection({ profile }: BlogSectionProps) {
     </section>
   )
 }
-
-export interface Blog {
-  id: number | string
-  title: string
-  description: string
-  image: StaticImageData | string
-  publishAt: string
-  link: string
-}
-
-const blogs: BlogCardItem[] = [
-  {
-    id: 1,
-    title: "The Mystery of React Children Re-rendering",
-    description:
-      "Component rendering is important for the overall performance of the app. So, although it seems simple, I want to share the complex children render logic.",
-    image: SpaceCat,
-    publishAt: "2024, March 10",
-    link: "https://medium.com/@shinthantequi/the-mystery-of-react-children-re-rendering-3544a68944f4",
-  },
-  {
-    id: 2,
-    title: "Testing 1",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae similique sequi ex quisquam ullam corrupti neque dolores ad provident magnam?",
-    image: ComingSoon1,
-    publishAt: "2022, March 10",
-    link: "",
-  },
-  {
-    id: 3,
-    title: "Testing 2",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae similique sequi ex quisquam ullam corrupti neque dolores ad provident magnam?",
-    image: ComingSoon2,
-    publishAt: "2024, January 15",
-    link: "",
-  },
-]
