@@ -27,7 +27,7 @@ export interface BlogCardItem {
   description: string
   image: StaticImageData | string
   publishAt: string
-  link: string
+  link?: string
 }
 
 const fallbackBlogImages = [SpaceCat, ComingSoon1, ComingSoon2]
@@ -61,7 +61,7 @@ export default function BlogSection({ profile }: BlogSectionProps) {
       (typeof post.image === "string" ? post.image : resolveRemoteMediaUrl(post.image)) ||
       fallbackBlogImages[index % fallbackBlogImages.length],
     publishAt: post.publishAt || "",
-    link: post.link || "#",
+    link: post.link || undefined,
   }))
 
   const displayBlogs = cmsBlogs.length > 0 ? cmsBlogs : blogs

@@ -248,11 +248,11 @@ export default function AboutSection({ profile }: AboutSectionProps) {
               ))}
             </div>
           </div>
-          <div className="w-full h-full flex justify-center items-center image-animation ">
-            <div className="relative w-[180px] h-[170px] lg:w-[300px] lg:h-[290px]">
-              <div className="w-full h-full bg-accentColor shadow-md rounded-sm absolute -right-3 -bottom-3" />
+          <div className="w-full h-full flex justify-center items-center image-animation overflow-visible">
+            <div className="relative w-[240px] h-[240px] lg:w-[420px] lg:h-[420px] overflow-visible">
+              <div className="w-full h-full bg-accentColor shadow-md rounded-sm absolute -right-6 -bottom-6" />
               <Image
-                className="absolute z-10 object-contain  w-full h-full shadow-sm rounded-sm"
+                className="absolute z-10 object-contain w-[140%] h-[140%] max-w-none -right-14 -bottom-14 shadow-sm rounded-sm pointer-events-none"
                 width={300}
                 height={300}
                 priority
