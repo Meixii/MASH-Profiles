@@ -173,6 +173,7 @@ export const techStackOptions = [
 
 export type CMSMedia = {
   alt?: string | null
+  thumbnailURL?: string | null
   url?: string | null
 }
 
@@ -320,13 +321,17 @@ function normalizeMediaUrl(url: string) {
 }
 
 export function resolveRemoteMediaUrl(value: unknown) {
+  if (typeof value === 'string') {
+    return normalizeMediaUrl(value)
+  }
+
   if (!value || typeof value !== 'object') {
     return null
   }
 
   const media = value as CMSMedia
 
-  return typeof media.url === 'string' ? normalizeMediaUrl(media.url) : null
+  return normalizeMediaUrl(media.url || media.thumbnailURL || '')
 }
 
 export async function getCMSProfiles(): Promise<CMSProfilesResponse | null> {

@@ -6,7 +6,6 @@ import Circle from "@/public/assets/about/circle.svg"
 import Signs from "@/public/assets/about/signs.svg"
 import Star from "@/public/assets/about/star.svg"
 import Triangle from "@/public/assets/about/triangle.svg"
-import ShinThantImage from "@/public/me-5.png"
 import type { CMSProfileCard, TechStackKey } from "@/lib/cmsProfiles"
 import { resolveRemoteMediaUrl, techStackOptions } from "@/lib/cmsProfiles"
 import { useSectionStore } from "@/store/section"
@@ -52,7 +51,6 @@ export default function AboutSection({ profile }: AboutSectionProps) {
     return createGenericTechStackItem(techStackLabelMap[key] || key)
   })
   const heroImageUrl = resolveRemoteMediaUrl(profile?.content?.hero?.image) || resolveRemoteMediaUrl(profile?.heroImage)
-  const aboutImageSrc = heroImageUrl || ShinThantImage
   const aboutTitle = aboutContent?.title || profile?.displayName || ""
   const aboutBody = aboutContent?.body || ""
   const educationLabel = aboutContent?.educationLabel || ""
@@ -241,14 +239,16 @@ export default function AboutSection({ profile }: AboutSectionProps) {
           <div className="w-full h-full flex justify-center items-center image-animation overflow-visible">
             <div className="relative w-[240px] h-[240px] lg:w-[420px] lg:h-[420px] overflow-visible">
               <div className="w-full h-full bg-accentColor shadow-md rounded-sm absolute -right-6 -bottom-6" />
-              <Image
-                className="absolute z-10 object-contain w-[140%] h-[140%] max-w-none -right-14 -bottom-14 shadow-sm rounded-sm pointer-events-none"
-                width={300}
-                height={300}
-                priority
-                alt={profile?.displayName ? `${profile.displayName} profile` : "profile photo"}
-                src={aboutImageSrc}
-              />
+              {heroImageUrl ? (
+                <Image
+                  className="absolute z-10 object-contain w-[140%] h-[140%] max-w-none -right-14 -bottom-14 shadow-sm rounded-sm pointer-events-none"
+                  width={300}
+                  height={300}
+                  priority
+                  alt={profile?.displayName ? `${profile.displayName} profile` : "profile photo"}
+                  src={heroImageUrl}
+                />
+              ) : null}
 
               <div className="absolute hidden lg:block -top-12 -right-12">
                 <Image

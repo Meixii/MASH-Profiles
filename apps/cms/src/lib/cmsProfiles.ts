@@ -6,6 +6,7 @@ import type { TechStackKey } from './techStack'
 
 export type MediaAsset = {
   alt?: string | null
+  thumbnailURL?: string | null
   url?: string | null
 }
 
@@ -166,13 +167,17 @@ function normalizeMediaUrl(url: string) {
 }
 
 export function resolveMediaUrl(value: unknown) {
+  if (typeof value === 'string') {
+    return normalizeMediaUrl(value)
+  }
+
   if (!value || typeof value !== 'object') {
     return null
   }
 
   const asset = value as MediaAsset
 
-  return typeof asset.url === 'string' ? normalizeMediaUrl(asset.url) : null
+  return normalizeMediaUrl(asset.url || asset.thumbnailURL || '')
 }
 
 export async function getProfileLandingData() {
