@@ -9,7 +9,7 @@ try {
         protocol: url.protocol.replace(':', ''),
         hostname: url.hostname,
         port: url.port,
-        pathname: '/media/**',
+        pathname: '/api/media/file/**',
     }
 } catch {
     cmsRemotePattern = null
@@ -24,6 +24,27 @@ const nextConfig = {
     images: {
         domains: ['avatars.githubusercontent.com', 'static.wixstatic.com', 'assets-global.website-files.com'],
         remotePatterns: [cmsRemotePattern].filter(Boolean),
+    },
+    async headers() {
+        return [
+            {
+                source: '/:path*',
+                headers: [
+                    {
+                        key: 'Access-Control-Allow-Origin',
+                        value: cmsBaseUrl,
+                    },
+                    {
+                        key: 'Access-Control-Allow-Methods',
+                        value: 'GET, POST, PUT, DELETE, OPTIONS',
+                    },
+                    {
+                        key: 'Access-Control-Allow-Headers',
+                        value: 'X-Requested-With, Content-Type, Authorization',
+                    },
+                ],
+            },
+        ];
     },
     async redirects() {
         return [
